@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 @Service
@@ -32,6 +33,7 @@ public class AuthService {
         user.setUsername(username);
         user.setPasswordHash(encoder.encode(password));
         user.setRole("USER");
+        user.setCreatedAt(OffsetDateTime.now());
         repo.save(user);
 
         logger.warn("PERCOBAAN REGISTER BERHASIL: {}", username);

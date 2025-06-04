@@ -1,6 +1,5 @@
 package com.bni.bni.entity;
 
-import java.math.BigInteger;
 import java.time.OffsetDateTime;
 
 import jakarta.persistence.*;
