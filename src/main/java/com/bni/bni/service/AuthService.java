@@ -17,37 +17,40 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final UserRepository repo;
 
-    AuthService(PasswordEncoder encoder, JwtUtil jwtUtil, UserRepository repo) {
+    public AuthService(PasswordEncoder encoder, JwtUtil jwtUtil, UserRepository repo) {
         this.encoder = encoder;
         this.jwtUtil = jwtUtil;
         this.repo = repo;
     }
 
-
-    public String register(String username, String password) {
+    public String register(String username, String password, String email) {
         if (repo.existsByUsername(username)) {
-            logger.warn("PERCOBAAN REGSTRASI DENGAN MENGGUNAKAN USER TERDAFTAR: {}", username);
-            return "User already exists";
+            logger.warn("PERCOBAAN REGISTRASI GAGAL - Username sudah terdaftar: {}", username);
+            return "Username already exists";
         }
+
         User user = new User();
         user.setUsername(username);
-        user.setPasswordHash(encoder.encode(password));
-        user.setRole("USER");
+        user.setEmailAddress(email);
+        user.setPassword(encoder.encode(password));
+        user.setIsActive(true);
         user.setCreatedAt(OffsetDateTime.now());
+        user.setUpdatedAt(OffsetDateTime.now());
+
         repo.save(user);
 
-        logger.warn("PERCOBAAN REGISTER BERHASIL: {}", username);
+        logger.info("REGISTRASI BERHASIL UNTUK USER: {}", username);
         return "Registered successfully";
     }
 
     public String login(String username, String password) {
         Optional<User> user = repo.findByUsername(username);
-        if (user.isPresent() && encoder.matches(password, user.get().getPasswordHash())) {
-            logger.warn("PERCOBAAN LOGIN BERHASIL: {}", username);
-            return jwtUtil.generateToken(username, user.get().getRole());
+        if (user.isPresent() && encoder.matches(password, user.get().getPassword())) {
+            logger.info("LOGIN BERHASIL DENGAN USERNAME: {}", username);
+            return jwtUtil.generateToken(username, password);
         }
 
-        logger.warn("PERCOBAAN LOGIN GAGAL, USERNAME ATAU PASSWORD SALAH: {}", username);
+        logger.warn("LOGIN GAGAL - Username atau password salah: {}", username);
         return null;
     }
 }

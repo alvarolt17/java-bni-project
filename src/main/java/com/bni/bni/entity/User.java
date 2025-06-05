@@ -12,60 +12,80 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(name = "password_hash", nullable = false)
-    private String passwordHash;
-
+    // Sesuaikan dengan nama kolom di database
     @Column(nullable = false)
-    private String role;
+    private String password;
 
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
 
-    // Getter & Setter untuk username
-    public String getUsername() {
-        return username;
-    }
+    @Column(name = "email_address", nullable = false)
+    private String emailAddress;
+
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
+
+    @Column(name = "updated_at", nullable = false)
+    private OffsetDateTime updatedAt;
+
+    // --- Getter & Setter ---
 
     public Long getId() {
-        return this.id;
+        return id;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public OffsetDateTime getCreatedAt() {
-        return this.createdAt;
+        return createdAt;
     }
 
     public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-
-    public void setUsername(String username) {
-        this.username = username;
+    public String getEmailAddress() {
+        return emailAddress;
     }
 
-    // Getter & Setter untuk passwordHash
-    public String getPasswordHash() {
-        return passwordHash;
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public Boolean getIsActive() {
+        return isActive;
     }
 
-    // Getter & Setter untuk role
-    public String getRole() {
-        return role;
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public OffsetDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(OffsetDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

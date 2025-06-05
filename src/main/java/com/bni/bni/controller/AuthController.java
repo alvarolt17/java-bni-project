@@ -24,7 +24,8 @@ public class AuthController {
      public ResponseEntity<Map<String, Object>> register(@RequestBody Map<String, String> body) {
          String username = body.get("username");
          String password = body.get("password");
-         String message = authService.register(username, password);
+         String email = body.get("email");
+         String message = authService.register(username, password,email);
 
          Map<String, Object> response = new HashMap<>();
          response.put("status", 200);
@@ -44,7 +45,6 @@ public class AuthController {
             response.put("status", 200);
             response.put("token", token);
             response.put("message", "Login Berhasil");
-            response.put("okee", "berhasil");
             return ResponseEntity.ok(response);
         } else {
             response.put("status", 401);
@@ -52,6 +52,8 @@ public class AuthController {
             return ResponseEntity.status(401).body(response);
         }
     }
+
+    
 
     @GetMapping("/me")
     public ResponseEntity<Map<String, Object>> me(@RequestHeader(value = "Authorization", required = false) String authHeader) {
