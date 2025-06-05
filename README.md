@@ -12,6 +12,7 @@ This is a simple Spring Boot API that provides user **registration** and **login
 - Spring Data JPA for database interaction
 - Spring Security (only for password encoding)
 - Oracle Database integration
+- alvaro
 
 ---
 
