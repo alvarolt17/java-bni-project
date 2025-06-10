@@ -1,7 +1,10 @@
 package com.bni.bni.controller;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -48,26 +51,26 @@ public class FileController {
     }
 
     @GetMapping("/{filename:.+}")
-    public ResponseEntity<Map<String, Object>> getFile(@PathVariable String filename) {
+    public ResponseEntity<Resource> getFile(@PathVariable String filename) {
         try {
-            final var filePath = Paths.get(uploadDir, filename).resolve(filename).normalize();
+            final var filePath = Paths.get(uploadDir).resolve(filename).normalize();
             final var resource = new UrlResource(filePath.toUri());
-
-            if (resource.exists() || resource.isReadable()) {
+            if (!resource.exists()) {
                 return ResponseEntity.notFound().build();
             }
-            return ResponseEntity.ok(Map.of(
-                    "status", 200,
-                    "message", "File retrieved successfully",
-                    "fileUrl", resource.getURL().toString()
-            ));
+
+            var contentType = Files.probeContentType(filePath);
+            if (contentType == null) {
+                contentType = "application/octet-stream";
+            }
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(contentType))
+                    .header(HttpHeaders.CONTENT_DISPOSITION,"inline; filename=\"" + resource.getFilename() + "\"")
+                    .body(resource);
         } catch (MalformedURLException exception) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(Map.of(
-                    "status", 500,
-                    "message", "File retrieval failed: " + e.getMessage()
-            ));
+            return ResponseEntity.internalServerError().build();
         }
     }
 }
