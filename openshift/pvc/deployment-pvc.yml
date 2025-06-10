@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springboot-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: springboot-app
+  template:
+    metadata:
+      labels:
+        app: springboot-app
+    spec:
+      containers:
+        - name: springboot
+          image: your-image:latest
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: upload-volume
+              mountPath: /uploads  # ⬅ Lokasi di dalam container
+      volumes:
+        - name: upload-volume
+          persistentVolumeClaim:
+            claimName: uploads  # ⬅ Nama PVC yang kamu buat
