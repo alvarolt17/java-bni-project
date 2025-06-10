@@ -48,7 +48,7 @@ public class AuthController {
             return ResponseEntity.ok(response);
         } else {
             response.put("status", 401);
-            response.put("message", "Invalid credentials");
+            response.put("message", "Invalid credentials!");
             return ResponseEntity.status(401).body(response);
         }
     }
