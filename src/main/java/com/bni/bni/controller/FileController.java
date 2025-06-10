@@ -35,7 +35,7 @@ public class FileController {
 
             return ResponseEntity.ok(Map.of(
                     "status", 200,
-                    "message", "File uploaded successfully",
+                    "message", "File uploaded successfully2",
                     "filename", filename,
                     "fileUrl", fileUrl
             ));
