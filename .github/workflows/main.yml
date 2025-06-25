@@ -1,25 +1,46 @@
-name: Trigger OpenShift Build
+# name: Trigger OpenShift Build
+# on:
+#   push:
+#     branches:
+#       - master
+#   workflow_dispatch:
+# jobs:
+#   trigger-build:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v3
+
+#       - name: Install OC CLI
+#         run: |
+#           curl -LO https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz
+#           tar -xzf openshift-client-linux.tar.gz
+#           sudo mv oc kubectl /usr/local/bin/
+#           oc version
+#       - name: Login to OpenShift
+#         run: |
+#           oc login --token=${{ secrets.OC_TOKEN }} --server=${{ secrets.OC_SERVER }}
+#       - name: Start OpenShift Build
+#         run: |
+#           oc start-build ${{ secrets.OC_BUILD_NAME}} -n ${{ secrets.OC_NAME_SPACE }} --wait --follow
+
+name: Notify Telegram on Merge to Main/Master
+
 on:
   push:
     branches:
+      - main
       - master
-  workflow_dispatch:
+
 jobs:
-  trigger-build:
+  notify:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
-      - name: Install OC CLI
+      - name: Send Telegram Notification
         run: |
-          curl -LO https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz
-          tar -xzf openshift-client-linux.tar.gz
-          sudo mv oc kubectl /usr/local/bin/
-          oc version
-      - name: Login to OpenShift
-        run: |
-          oc login --token=${{ secrets.OC_TOKEN }} --server=${{ secrets.OC_SERVER }}
-      - name: Start OpenShift Build
-        run: |
-          oc start-build ${{ secrets.OC_BUILD_NAME}} -n ${{ secrets.OC_NAME_SPACE }} --wait --follow
+          curl -X POST "https://api.telegram.org/bot7992323994:AAGFPm-f74H_39DpfPmMN7cJ8y6VE-YloOY/sendMessage" \
+            -d chat_id=1309089514 \
+            -d text="🚨 Merge to Main/Master Branch 🚨\nA merge has been made to the main/master branch. Please review the changes!"
